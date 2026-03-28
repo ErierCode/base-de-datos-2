@@ -333,3 +333,17 @@ GO
 SELECT COUNT(*) AS total_user_state FROM dbo.user_state;
 GO
 ```
+---
+---
+
+## Prueba de trabajo
+
+- Cantidad de datos insertados.
+
+    ![Cantidad de datos insertados](./image1.png)
+
+- Base de datos en restauración.
+![Cantidad de datos insertados](./image2.png)
+
+- Restauración completada (se insertaron dos datos)
+![Cantidad de datos insertados](./image3.png)
