@@ -1,0 +1,96 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "matrix_heatmap",
+  "position": {
+    "x": 24,
+    "y": 80,
+    "z": 0,
+    "width": 1232,
+    "height": 600,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_heatmap"
+                    }
+                  },
+                  "Property": "dia_nombre"
+                }
+              },
+              "queryRef": "v_pbi_heatmap.dia_nombre",
+              "active": true
+            }
+          ]
+        },
+        "Columns": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_heatmap"
+                    }
+                  },
+                  "Property": "hora"
+                }
+              },
+              "queryRef": "v_pbi_heatmap.hora",
+              "active": true
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_heatmap"
+                    }
+                  },
+                  "Property": "operaciones"
+                }
+              },
+              "queryRef": "v_pbi_heatmap.operaciones",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "objects": {},
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "''"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

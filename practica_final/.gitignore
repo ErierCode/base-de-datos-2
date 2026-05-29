@@ -1,0 +1,9 @@
+.env
+.env.local
+backups/
+*.dump
+__pycache__/
+node_modules/
+bin/
+obj/
+.vs/

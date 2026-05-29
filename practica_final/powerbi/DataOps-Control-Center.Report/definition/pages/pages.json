@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.0.0/schema.json",
+  "pageOrder": [
+    "p01_rendimiento",
+    "p02_heatmap",
+    "p03_top_slow",
+    "p04_backups",
+    "p05_disponibilidad"
+  ],
+  "activePageName": "p01_rendimiento"
+}

@@ -1,0 +1,416 @@
+{
+  "name": "DataOps-Control-Center",
+  "compatibilityLevel": 1567,
+  "model": {
+    "culture": "es-ES",
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "sourceQueryCulture": "es-ES",
+    "tables": [
+      {
+        "name": "v_pbi_rendimiento",
+        "columns": [
+          {
+            "name": "id",
+            "dataType": "int64",
+            "sourceColumn": "id"
+          },
+          {
+            "name": "db_id",
+            "dataType": "int64",
+            "sourceColumn": "db_id"
+          },
+          {
+            "name": "motor",
+            "dataType": "string",
+            "sourceColumn": "motor"
+          },
+          {
+            "name": "capture_time",
+            "dataType": "dateTime",
+            "sourceColumn": "capture_time",
+            "formatString": "General Date"
+          },
+          {
+            "name": "cpu_pct",
+            "dataType": "double",
+            "sourceColumn": "cpu_pct",
+            "formatString": "0.00"
+          },
+          {
+            "name": "connections",
+            "dataType": "int64",
+            "sourceColumn": "connections"
+          },
+          {
+            "name": "locks",
+            "dataType": "int64",
+            "sourceColumn": "locks"
+          },
+          {
+            "name": "deadlocks",
+            "dataType": "int64",
+            "sourceColumn": "deadlocks"
+          },
+          {
+            "name": "health_grade",
+            "dataType": "string",
+            "sourceColumn": "health_grade"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "v_pbi_rendimiento",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = PostgreSQL.Database(\"localhost:5433\", \"dcc_control\", [CreateNavigationProperties=false]),",
+                "    Data = Source{[Schema=\"public\",Item=\"v_pbi_rendimiento\"]}[Data]",
+                "in",
+                "    Data"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "v_pbi_heatmap",
+        "columns": [
+          {
+            "name": "db_id",
+            "dataType": "int64",
+            "sourceColumn": "db_id"
+          },
+          {
+            "name": "motor",
+            "dataType": "string",
+            "sourceColumn": "motor"
+          },
+          {
+            "name": "hora",
+            "dataType": "int64",
+            "sourceColumn": "hora"
+          },
+          {
+            "name": "dia_semana",
+            "dataType": "int64",
+            "sourceColumn": "dia_semana"
+          },
+          {
+            "name": "dia_nombre",
+            "dataType": "string",
+            "sourceColumn": "dia_nombre"
+          },
+          {
+            "name": "operaciones",
+            "dataType": "int64",
+            "sourceColumn": "operaciones"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "v_pbi_heatmap",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = PostgreSQL.Database(\"localhost:5433\", \"dcc_control\", [CreateNavigationProperties=false]),",
+                "    Data = Source{[Schema=\"public\",Item=\"v_pbi_heatmap\"]}[Data]",
+                "in",
+                "    Data"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "v_pbi_top_slow",
+        "columns": [
+          {
+            "name": "id",
+            "dataType": "int64",
+            "sourceColumn": "id"
+          },
+          {
+            "name": "db_id",
+            "dataType": "int64",
+            "sourceColumn": "db_id"
+          },
+          {
+            "name": "motor",
+            "dataType": "string",
+            "sourceColumn": "motor"
+          },
+          {
+            "name": "speed_class",
+            "dataType": "string",
+            "sourceColumn": "speed_class"
+          },
+          {
+            "name": "duration_ms",
+            "dataType": "double",
+            "sourceColumn": "duration_ms",
+            "formatString": "0.00"
+          },
+          {
+            "name": "query_preview",
+            "dataType": "string",
+            "sourceColumn": "query_preview"
+          },
+          {
+            "name": "index_used",
+            "dataType": "string",
+            "sourceColumn": "index_used"
+          },
+          {
+            "name": "execution_plan_preview",
+            "dataType": "string",
+            "sourceColumn": "execution_plan_preview"
+          },
+          {
+            "name": "duration_before_ms",
+            "dataType": "double",
+            "sourceColumn": "duration_before_ms",
+            "formatString": "0.00"
+          },
+          {
+            "name": "duration_after_ms",
+            "dataType": "double",
+            "sourceColumn": "duration_after_ms",
+            "formatString": "0.00"
+          },
+          {
+            "name": "improvement_pct",
+            "dataType": "double",
+            "sourceColumn": "improvement_pct",
+            "formatString": "0.00"
+          },
+          {
+            "name": "index_applied",
+            "dataType": "string",
+            "sourceColumn": "index_applied"
+          },
+          {
+            "name": "created_at",
+            "dataType": "dateTime",
+            "sourceColumn": "created_at",
+            "formatString": "General Date"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "v_pbi_top_slow",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = PostgreSQL.Database(\"localhost:5433\", \"dcc_control\", [CreateNavigationProperties=false]),",
+                "    Data = Source{[Schema=\"public\",Item=\"v_pbi_top_slow\"]}[Data]",
+                "in",
+                "    Data"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "v_pbi_backups",
+        "columns": [
+          {
+            "name": "id",
+            "dataType": "int64",
+            "sourceColumn": "id"
+          },
+          {
+            "name": "kind",
+            "dataType": "string",
+            "sourceColumn": "kind"
+          },
+          {
+            "name": "size_mb",
+            "dataType": "double",
+            "sourceColumn": "size_mb",
+            "formatString": "0.00"
+          },
+          {
+            "name": "duration_sec",
+            "dataType": "double",
+            "sourceColumn": "duration_sec",
+            "formatString": "0.00"
+          },
+          {
+            "name": "restore_point",
+            "dataType": "dateTime",
+            "sourceColumn": "restore_point",
+            "formatString": "General Date"
+          },
+          {
+            "name": "sla_met",
+            "dataType": "boolean",
+            "sourceColumn": "sla_met"
+          },
+          {
+            "name": "subido_nube",
+            "dataType": "boolean",
+            "sourceColumn": "subido_nube"
+          },
+          {
+            "name": "created_at",
+            "dataType": "dateTime",
+            "sourceColumn": "created_at",
+            "formatString": "General Date"
+          },
+          {
+            "name": "notes",
+            "dataType": "string",
+            "sourceColumn": "notes"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "v_pbi_backups",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = PostgreSQL.Database(\"localhost:5433\", \"dcc_control\", [CreateNavigationProperties=false]),",
+                "    Data = Source{[Schema=\"public\",Item=\"v_pbi_backups\"]}[Data]",
+                "in",
+                "    Data"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "v_pbi_sla",
+        "columns": [
+          {
+            "name": "seconds_since_full_restore_point",
+            "dataType": "double",
+            "sourceColumn": "seconds_since_full_restore_point",
+            "formatString": "0.00"
+          },
+          {
+            "name": "target_rpo_sec",
+            "dataType": "int64",
+            "sourceColumn": "target_rpo_sec"
+          },
+          {
+            "name": "target_rto_sec",
+            "dataType": "int64",
+            "sourceColumn": "target_rto_sec"
+          },
+          {
+            "name": "cumple_rpo",
+            "dataType": "boolean",
+            "sourceColumn": "cumple_rpo"
+          },
+          {
+            "name": "last_full_restore_point",
+            "dataType": "dateTime",
+            "sourceColumn": "last_full_restore_point",
+            "formatString": "General Date"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "v_pbi_sla",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = PostgreSQL.Database(\"localhost:5433\", \"dcc_control\", [CreateNavigationProperties=false]),",
+                "    Data = Source{[Schema=\"public\",Item=\"v_pbi_sla\"]}[Data]",
+                "in",
+                "    Data"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "v_pbi_disponibilidad",
+        "columns": [
+          {
+            "name": "db_id",
+            "dataType": "int64",
+            "sourceColumn": "db_id"
+          },
+          {
+            "name": "motor",
+            "dataType": "string",
+            "sourceColumn": "motor"
+          },
+          {
+            "name": "muestras_sanas",
+            "dataType": "int64",
+            "sourceColumn": "muestras_sanas"
+          },
+          {
+            "name": "total_muestras",
+            "dataType": "int64",
+            "sourceColumn": "total_muestras"
+          },
+          {
+            "name": "disponibilidad_pct",
+            "dataType": "double",
+            "sourceColumn": "disponibilidad_pct",
+            "formatString": "0.00"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "v_pbi_disponibilidad",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = PostgreSQL.Database(\"localhost:5433\", \"dcc_control\", [CreateNavigationProperties=false]),",
+                "    Data = Source{[Schema=\"public\",Item=\"v_pbi_disponibilidad\"]}[Data]",
+                "in",
+                "    Data"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "_Medidas",
+        "measures": [
+          {
+            "name": "Objetivo Disponibilidad",
+            "expression": "99.9",
+            "formatString": "0.0"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "_Medidas",
+            "mode": "import",
+            "source": {
+              "type": "calculated",
+              "expression": "ROW(\"Placeholder\", 1)"
+            }
+          }
+        ]
+      }
+    ],
+    "annotations": [
+      {
+        "name": "PBI_QueryOrder",
+        "value": "[\"v_pbi_rendimiento\", \"v_pbi_heatmap\", \"v_pbi_top_slow\", \"v_pbi_backups\", \"v_pbi_sla\", \"v_pbi_disponibilidad\"]"
+      },
+      {
+        "name": "__PBI_TimeIntelligenceEnabled",
+        "value": "0"
+      }
+    ]
+  }
+}

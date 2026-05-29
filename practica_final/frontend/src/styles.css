@@ -1,0 +1,159 @@
+:root {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: #e2e8f0;
+  background: #0f172a;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+.layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+.layout.center {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+nav {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+nav a {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+button {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+button.ghost {
+  background: transparent;
+  border: 1px solid #334155;
+}
+button.active {
+  background: #1d4ed8;
+}
+.card {
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.login {
+  width: min(400px, 100%);
+}
+label {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+input,
+select {
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.stat {
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+.stat.selected {
+  border-color: #38bdf8;
+}
+.pill {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.pill.ok {
+  background: #14532d;
+  color: #86efac;
+}
+.pill.warn {
+  background: #713f12;
+  color: #fde047;
+}
+.pill.crit {
+  background: #7f1d1d;
+  color: #fca5a5;
+}
+.grid-form {
+  display: grid;
+  gap: 0.5rem;
+}
+.row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th,
+td {
+  text-align: left;
+  padding: 0.5rem;
+  border-bottom: 1px solid #334155;
+}
+.muted {
+  color: #94a3b8;
+}
+.error {
+  color: #f87171;
+}
+.banner {
+  padding: 0.75rem;
+  background: #450a0a;
+  border-radius: 8px;
+}
+.big {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0.25rem 0;
+}
+.crit-text {
+  color: #f87171;
+}
+.sql-preview {
+  font-size: 0.75rem;
+  background: #0f172a;
+  padding: 0.5rem;
+  overflow-x: auto;
+  border-radius: 6px;
+}
+  header h1 {
+    font-size: 1.1rem;
+  }
+}

@@ -1,0 +1,24 @@
+groups:
+  - name: dcc_health
+    rules:
+      - alert: DccHighCpuProxy
+        expr: dcc_db_cpu_percent > 85
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU proxy alto en conexión {{ $labels.connection }}"
+      - alert: DccCriticalHealth
+        expr: dcc_db_health_grade == 2
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Estado CRITICAL en {{ $labels.connection }}"
+      - alert: DccHighConnections
+        expr: dcc_db_connections > 80
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Conexiones elevadas en {{ $labels.connection }}"

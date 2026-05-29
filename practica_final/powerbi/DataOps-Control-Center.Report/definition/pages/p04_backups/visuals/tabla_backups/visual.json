@@ -1,0 +1,116 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "tabla_backups",
+  "position": {
+    "x": 24,
+    "y": 80,
+    "z": 0,
+    "width": 800,
+    "height": 600,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_backups"
+                    }
+                  },
+                  "Property": "kind"
+                }
+              },
+              "queryRef": "v_pbi_backups.kind",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_backups"
+                    }
+                  },
+                  "Property": "size_mb"
+                }
+              },
+              "queryRef": "v_pbi_backups.size_mb",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_backups"
+                    }
+                  },
+                  "Property": "duration_sec"
+                }
+              },
+              "queryRef": "v_pbi_backups.duration_sec",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_backups"
+                    }
+                  },
+                  "Property": "sla_met"
+                }
+              },
+              "queryRef": "v_pbi_backups.sla_met",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_backups"
+                    }
+                  },
+                  "Property": "created_at"
+                }
+              },
+              "queryRef": "v_pbi_backups.created_at",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "objects": {},
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "''"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "tabla_disp",
+  "position": {
+    "x": 640,
+    "y": 80,
+    "z": 0,
+    "width": 616,
+    "height": 400,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_disponibilidad"
+                    }
+                  },
+                  "Property": "motor"
+                }
+              },
+              "queryRef": "v_pbi_disponibilidad.motor",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_disponibilidad"
+                    }
+                  },
+                  "Property": "disponibilidad_pct"
+                }
+              },
+              "queryRef": "v_pbi_disponibilidad.disponibilidad_pct",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_disponibilidad"
+                    }
+                  },
+                  "Property": "total_muestras"
+                }
+              },
+              "queryRef": "v_pbi_disponibilidad.total_muestras",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "objects": {},
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "''"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

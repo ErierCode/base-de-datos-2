@@ -1,0 +1,11 @@
+apiVersion: 1
+providers:
+  - name: DataOps
+    orgId: 1
+    folder: DataOps Control Center
+    type: file
+    disableDeletion: false
+    editable: true
+    updateIntervalSeconds: 30
+    options:
+      path: /etc/grafana/provisioning/dashboards/json

@@ -1,0 +1,116 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "tabla_rendimiento",
+  "position": {
+    "x": 24,
+    "y": 468,
+    "z": 0,
+    "width": 1232,
+    "height": 240,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_rendimiento"
+                    }
+                  },
+                  "Property": "motor"
+                }
+              },
+              "queryRef": "v_pbi_rendimiento.motor",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_rendimiento"
+                    }
+                  },
+                  "Property": "capture_time"
+                }
+              },
+              "queryRef": "v_pbi_rendimiento.capture_time",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_rendimiento"
+                    }
+                  },
+                  "Property": "cpu_pct"
+                }
+              },
+              "queryRef": "v_pbi_rendimiento.cpu_pct",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_rendimiento"
+                    }
+                  },
+                  "Property": "connections"
+                }
+              },
+              "queryRef": "v_pbi_rendimiento.connections",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_rendimiento"
+                    }
+                  },
+                  "Property": "locks"
+                }
+              },
+              "queryRef": "v_pbi_rendimiento.locks",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "objects": {},
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "''"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

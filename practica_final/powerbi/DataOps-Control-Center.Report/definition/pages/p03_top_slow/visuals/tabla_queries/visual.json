@@ -1,0 +1,144 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "tabla_queries",
+  "position": {
+    "x": 24,
+    "y": 80,
+    "z": 0,
+    "width": 1232,
+    "height": 600,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_top_slow"
+                    }
+                  },
+                  "Property": "motor"
+                }
+              },
+              "queryRef": "v_pbi_top_slow.motor",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_top_slow"
+                    }
+                  },
+                  "Property": "speed_class"
+                }
+              },
+              "queryRef": "v_pbi_top_slow.speed_class",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_top_slow"
+                    }
+                  },
+                  "Property": "duration_ms"
+                }
+              },
+              "queryRef": "v_pbi_top_slow.duration_ms",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_top_slow"
+                    }
+                  },
+                  "Property": "query_preview"
+                }
+              },
+              "queryRef": "v_pbi_top_slow.query_preview",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_top_slow"
+                    }
+                  },
+                  "Property": "duration_before_ms"
+                }
+              },
+              "queryRef": "v_pbi_top_slow.duration_before_ms",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_top_slow"
+                    }
+                  },
+                  "Property": "duration_after_ms"
+                }
+              },
+              "queryRef": "v_pbi_top_slow.duration_after_ms",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "v_pbi_top_slow"
+                    }
+                  },
+                  "Property": "improvement_pct"
+                }
+              },
+              "queryRef": "v_pbi_top_slow.improvement_pct",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "objects": {},
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "''"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

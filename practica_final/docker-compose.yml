@@ -1,0 +1,337 @@
+# DataOps Control Center — stack sugerido del PDF
+# Backend: .NET 8 Web API (JWT + Swagger) | Frontend: React 18 | Monitoreo: Prometheus + Grafana + Alertmanager
+# Workers Python: health, analytics, backup, replicación (asíncronos)
+# Simulador Mód.4: docker compose --profile sim run --rm concurrency-sim
+# Mód.5 nube: AWS → define S3_BUCKET + credenciales (ver .env.example).
+# Dev local S3-compatible: docker compose --profile cloud up -d minio y S3_ENDPOINT_URL=http://minio:9000
+
+services:
+  postgres-control:
+    image: postgres:16-alpine
+    container_name: dcc-postgres-control
+    restart: unless-stopped
+    command:
+      - postgres
+      - -c
+      - max_connections=250
+      - -c
+      - shared_preload_libraries=pg_stat_statements
+      - -c
+      - pg_stat_statements.track=all
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-dcc_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dcc_secret_change_me}
+      POSTGRES_DB: ${POSTGRES_DB:-dcc_control}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_control_data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d:ro
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: dcc-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__ControlDb: Host=postgres-control;Port=5432;Database=${POSTGRES_DB:-dcc_control};Username=${POSTGRES_USER:-dcc_admin};Password=${POSTGRES_PASSWORD:-dcc_secret_change_me}
+      Jwt__Key: ${JWT_KEY:-dcc-jwt-dev-key-change-in-production-min-32-chars!!}
+      Auth__DemoUser: ${DCC_ADMIN_USER:-admin}
+      Auth__DemoPassword: ${DCC_ADMIN_PASSWORD:-Admin123!}
+      Redis__Connection: redis-cache:6379
+      Backup__S3Bucket: ${S3_BUCKET:-}
+      Backup__S3EndpointUrl: ${S3_ENDPOINT_URL:-}
+      S3_BUCKET: ${S3_BUCKET:-}
+      S3_ENDPOINT_URL: ${S3_ENDPOINT_URL:-}
+      Alerts__SmtpHost: ${Alerts__SmtpHost:-}
+      Alerts__SmtpPort: ${Alerts__SmtpPort:-587}
+      Alerts__SmtpSsl: ${Alerts__SmtpSsl:-true}
+      Alerts__SmtpUser: ${Alerts__SmtpUser:-}
+      Alerts__SmtpPassword: ${Alerts__SmtpPassword:-}
+      Alerts__EmailFrom: ${Alerts__EmailFrom:-}
+      Alerts__EmailTo: ${Alerts__EmailTo:-}
+    ports:
+      - "${API_PORT:-8080}:8080"
+    depends_on:
+      postgres-control:
+        condition: service_healthy
+      redis-cache:
+        condition: service_started
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ""
+    container_name: dcc-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      - api
+
+  health-monitor:
+    build:
+      context: ./health-worker
+      dockerfile: Dockerfile
+    container_name: dcc-health-monitor
+    restart: unless-stopped
+    environment:
+      CONTROL_DATABASE_URL: postgresql://${POSTGRES_USER:-dcc_admin}:${POSTGRES_PASSWORD:-dcc_secret_change_me}@postgres-control:5432/${POSTGRES_DB:-dcc_control}
+      POLL_SECONDS: ${POLL_SECONDS:-60}
+      JWT_KEY: ${JWT_KEY:-dcc-jwt-dev-key-change-in-production-min-32-chars!!}
+    depends_on:
+      postgres-control:
+        condition: service_healthy
+
+  analytics-worker:
+    build:
+      context: ./analytics-worker
+      dockerfile: Dockerfile
+    container_name: dcc-analytics-worker
+    restart: unless-stopped
+    environment:
+      CONTROL_DATABASE_URL: postgresql://${POSTGRES_USER:-dcc_admin}:${POSTGRES_PASSWORD:-dcc_secret_change_me}@postgres-control:5432/${POSTGRES_DB:-dcc_control}
+      QUERY_POLL_SECONDS: ${QUERY_POLL_SECONDS:-120}
+      QUERY_TOP_N: ${QUERY_TOP_N:-40}
+      EXPLAIN_SAMPLES: ${EXPLAIN_SAMPLES:-8}
+      MIN_MEAN_MS: ${MIN_MEAN_MS:-0}
+      JWT_KEY: ${JWT_KEY:-dcc-jwt-dev-key-change-in-production-min-32-chars!!}
+    depends_on:
+      postgres-control:
+        condition: service_healthy
+
+  concurrency-sim:
+    build:
+      context: ./concurrency-sim
+      dockerfile: Dockerfile
+    container_name: dcc-concurrency-sim
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-dcc_admin}:${POSTGRES_PASSWORD:-dcc_secret_change_me}@postgres-control:5432/${POSTGRES_DB:-dcc_control}
+      DB_CONNECTION_ID: ${DB_CONNECTION_ID:-1}
+      SIM_USERS: ${SIM_USERS:-120}
+      SIM_DURATION_SEC: ${SIM_DURATION_SEC:-40}
+      DEADLOCK_STRESS_RATIO: ${DEADLOCK_STRESS_RATIO:-0.18}
+      SIM_CONTINUOUS: ${SIM_CONTINUOUS:-1}
+      SIM_CYCLE_PAUSE_SEC: ${SIM_CYCLE_PAUSE_SEC:-45}
+    depends_on:
+      postgres-control:
+        condition: service_healthy
+
+  backup-worker:
+    build:
+      context: ./backup-worker
+      dockerfile: Dockerfile
+    container_name: dcc-backup-worker
+    restart: unless-stopped
+    environment:
+      DATABASE_DUMP_URL: postgresql://${POSTGRES_USER:-dcc_admin}:${POSTGRES_PASSWORD:-dcc_secret_change_me}@postgres-control:5432/${POSTGRES_DB:-dcc_control}
+      BACKUP_REGISTRY_URL: postgresql://${POSTGRES_USER:-dcc_admin}:${POSTGRES_PASSWORD:-dcc_secret_change_me}@postgres-control:5432/${POSTGRES_DB:-dcc_control}
+      POSTGRES_ADMIN_URL: postgresql://${POSTGRES_USER:-dcc_admin}:${POSTGRES_PASSWORD:-dcc_secret_change_me}@postgres-control:5432/postgres
+      BACKUPS_DIR: /backups
+      RETENTION_DAYS: ${RETENTION_DAYS:-14}
+      FULL_BOOTSTRAP_ON_STARTUP: ${FULL_BOOTSTRAP_ON_STARTUP:-0}
+      FULL_CRON: ${FULL_CRON:-10 3 * * *}
+      DIFF_CRON: ${DIFF_CRON:-15 */6 * * *}
+      INC_CRON: ${INC_CRON:-20 */2 * * *}
+      PURGE_CRON: ${PURGE_CRON:-5 */4 * * *}
+      S3_BUCKET: ${S3_BUCKET:-}
+      S3_PREFIX: ${S3_PREFIX:-dcc-control/}
+      S3_ENDPOINT_URL: ${S3_ENDPOINT_URL:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-us-east-1}
+      RECOVERY_DATABASE: ${RECOVERY_DATABASE:-dcc_control_recovery}
+    volumes:
+      - ./backups:/backups
+    depends_on:
+      postgres-control:
+        condition: service_healthy
+
+  postgres-ha-primary:
+    # Bitnami ya no publica tag :16; usar latest o bitnamilegacy/postgresql:16
+    image: docker.io/bitnami/postgresql:latest
+    container_name: dcc-ha-primary
+    restart: unless-stopped
+    environment:
+      POSTGRESQL_REPLICATION_MODE: master
+      POSTGRESQL_REPLICATION_USER: ${HA_REPLICATION_USER:-repl_user}
+      POSTGRESQL_REPLICATION_PASSWORD: ${HA_REPLICATION_PASSWORD:-ha_rep_pass_change_me}
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_PASSWORD: ${HA_SUPERUSER_PASSWORD:-ha_super_pass_change_me}
+      POSTGRESQL_DATABASE: ${HA_DATABASE:-replicated_demo}
+    volumes:
+      - ha_primary_data:/bitnami/postgresql
+      - ./init-ha:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "${HA_PRIMARY_PUBLISH:-55432}:5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U postgres -d ${HA_DATABASE:-replicated_demo}"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 90s
+
+  postgres-ha-replica:
+    image: docker.io/bitnami/postgresql:latest
+    container_name: dcc-ha-replica
+    restart: unless-stopped
+    depends_on:
+      postgres-ha-primary:
+        condition: service_healthy
+    environment:
+      POSTGRESQL_REPLICATION_MODE: slave
+      POSTGRESQL_REPLICATION_USER: ${HA_REPLICATION_USER:-repl_user}
+      POSTGRESQL_REPLICATION_PASSWORD: ${HA_REPLICATION_PASSWORD:-ha_rep_pass_change_me}
+      POSTGRESQL_MASTER_HOST: postgres-ha-primary
+      POSTGRESQL_MASTER_PORT_NUMBER: 5432
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_PASSWORD: ${HA_SUPERUSER_PASSWORD:-ha_super_pass_change_me}
+      POSTGRESQL_DATABASE: ${HA_DATABASE:-replicated_demo}
+    volumes:
+      - ha_replica_data:/bitnami/postgresql
+    ports:
+      - "${HA_REPLICA_PUBLISH:-55433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 40
+      start_period: 120s
+
+  redis-cache:
+    image: redis:7-alpine
+    container_name: dcc-redis-cache
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PUBLISH_PORT:-6380}:6379"
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: dcc-prometheus
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus/rules:/etc/prometheus/rules:ro
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --web.enable-lifecycle
+
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    container_name: dcc-alertmanager
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    ports:
+      - "${ALERTMANAGER_PORT:-9093}:9093"
+    depends_on:
+      - api
+
+  grafana:
+    image: grafana/grafana:11.4.0
+    container_name: dcc-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "${GRAFANA_PORT:-3001}:3000"
+    depends_on:
+      - prometheus
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    container_name: dcc-postgres-exporter
+    restart: unless-stopped
+    environment:
+      DATA_SOURCE_NAME: postgresql://${POSTGRES_USER:-dcc_admin}:${POSTGRES_PASSWORD:-dcc_secret_change_me}@postgres-control:5432/${POSTGRES_DB:-dcc_control}?sslmode=disable
+    depends_on:
+      postgres-control:
+        condition: service_healthy
+
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.66.0
+    container_name: dcc-redis-exporter
+    restart: unless-stopped
+    environment:
+      REDIS_ADDR: redis://redis-cache:6379
+    depends_on:
+      - redis-cache
+
+  replication-monitor:
+    build:
+      context: ./replication-tools
+      dockerfile: Dockerfile
+    container_name: dcc-replication-monitor
+    restart: unless-stopped
+    environment:
+      CONTROL_DATABASE_URL: postgresql://${POSTGRES_USER:-dcc_admin}:${POSTGRES_PASSWORD:-dcc_secret_change_me}@postgres-control:5432/${POSTGRES_DB:-dcc_control}
+      PRIMARY_PG_URL: postgresql://postgres:${HA_SUPERUSER_PASSWORD:-ha_super_pass_change_me}@postgres-ha-primary:5432/${HA_DATABASE:-replicated_demo}
+      REPLICATION_POLL_SECONDS: ${REPLICATION_POLL_SECONDS:-5}
+    depends_on:
+      postgres-control:
+        condition: service_healthy
+      postgres-ha-primary:
+        condition: service_healthy
+      postgres-ha-replica:
+        condition: service_healthy
+
+  replication-load:
+    build:
+      context: ./replication-tools
+      dockerfile: Dockerfile
+    container_name: dcc-replication-load
+    restart: unless-stopped
+    command: ["python", "-u", "load.py"]
+    environment:
+      PRIMARY_PG_URL: postgresql://postgres:${HA_SUPERUSER_PASSWORD:-ha_super_pass_change_me}@postgres-ha-primary:5432/${HA_DATABASE:-replicated_demo}
+      SCENARIO_HOLD_SEC: ${SCENARIO_HOLD_SEC:-90}
+      SCENARIO_SEQUENCE: ${SCENARIO_SEQUENCE:-NORMAL,MEDIUM,HIGH,MEDIUM,NORMAL,HIGH}
+    depends_on:
+      postgres-ha-primary:
+        condition: service_healthy
+      postgres-ha-replica:
+        condition: service_healthy
+
+  minio:
+    image: minio/minio:latest
+    profiles:
+      - cloud
+    container_name: dcc-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio_access}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio_secret_change_me}
+    ports:
+      - "${MINIO_PUBLIC_PORT:-9005}:9000"
+      - "${MINIO_CONSOLE_PORT:-9006}:9001"
+    volumes:
+      - minio_data:/data
+
+volumes:
+  postgres_control_data:
+  minio_data:
+  ha_primary_data:
+  ha_replica_data:
+  grafana_data:

@@ -1,0 +1,169 @@
+orage o a un bucket de Amazon S3. Debe incluir: autenticación mediante credenciales seguras 
+(variables de entorno), verificación de integridad (hash MD5/SHA256), registro del URL remoto en 
+BACKUP_HISTORY y política de retención configurable.
+El dashboard de backup debe mostrar el cumplimiento de SLA (Sí/No), con los valores de RPO y RTO 
+calculados. Ejemplo orientativo: RPO = 15 minutos, RTO = 45 minutos. El estudiante debe argumentar si su 
+arquitectura cumple los valores objetivo definidos.
+Módulo 6 — Replicación Distribuida y Módulo 7 
+— Caché con Redis
+Estos dos módulos abordan patrones arquitecturales de alta disponibilidad y rendimiento que son estándar en 
+entornos de producción empresarial. El Módulo 6 introduce al estudiante en los fundamentos teóricos y prácticos de 
+la replicación, mientras que el Módulo 7 demuestra el impacto cuantificable de una capa de caché sobre el tiempo de 
+respuesta.
+Replicación Primario-Réplica
+El estudiante debe configurar una base de datos 
+primaria que acepta escrituras y una réplica de solo 
+lectura. Se medirá el lag de replicación en tres 
+escenarios: 
+2 segundos (carga normal), 5 segundos 
+(carga media) y 20 segundos (carga alta). La plataforma 
+debe visualizar el lag en tiempo real.
+El informe debe incluir un análisis del Teorema CAP, 
+explicando cómo la arquitectura elegida balancea 
+Consistencia, Disponibilidad y Tolerancia a particiones, 
+justificando las decisiones de diseño adoptadas.
+Escenario Lag Estado
+Carga normal 2 seg Aceptable
+Carga media 5 seg Advertencia
+Carga alta 20 seg Crítico
+Caché con Redis
+Implementar Redis como capa de caché sobre las 
+consultas más frecuentes de la plataforma. El 
+estudiante debe instrumentar el código para distinguir 
+entre cache hit y cache miss, registrando ambos casos 
+en un log de métricas.
+La demostración debe incluir una comparativa de 
+tiempos medida con herramientas reales:
+Sin caché
+~400 ms por consulta
+Con caché
+~40 ms por consulta
+Debe incluir estrategia de invalidación de caché (TTL, 
+invalidación manual por evento) y análisis de la tasa de 
+aciertos (hit ratio) en el dashboard.
+Módulo 8 — Business Intelligence y Módulo 9 — 
+Motor de Alertas
+Los módulos finales de la plataforma integran la dimensión analítica y proactiva del sistema. El Módulo 8 transforma 
+los datos capturados por todos los módulos anteriores en visualizaciones ejecutivas, mientras que el Módulo 9 
+automatiza la respuesta ante condiciones anómalas, cerrando el ciclo de monitoreo inteligente.
+Dashboard Power BI — Vistas obligatorias
+Rendimiento temporal
+Gráficos de línea temporal con métricas de CPU, 
+conexiones activas y bloqueos por motor y por 
+intervalo de tiempo configurable.
+Heatmap de actividad
+Visualización de densidad de operaciones por hora y 
+día de la semana, identificando picos de carga y 
+ventanas de mantenimiento óptimas.
+T op Queries lentas
+Ranking de las 10 consultas con mayor duración 
+promedio, con enlace al plan de ejecución y la versión 
+optimizada cuando esté disponible.
+Estado de backups y SLA
+Indicador de cumplimiento de SLA, historial de 
+backups con estado (exitoso/fallido) y tiempo de 
+restauración proyectado.
+Disponibilidad global
+Porcentaje de disponibilidad por motor con objetivo 
+del 99,9 %, calculado sobre la ventana temporal 
+seleccionada.
+Motor de Alertas — Reglas mínimas
+Condición Acción Severidad
+CPU > 85% Correo 
+electrónico
+Warning
+Deadlocks 
+> 3
+Alerta 
+crítica en 
+dashboard
+Critical
+Backup 
+fallido
+Alarma roja 
++ correo
+Critical
+Lag 
+replicación 
+> 10 seg
+Notificació
+n en 
+dashboard
+Warning
+Disco > 
+90%
+Correo + 
+alerta 
+visual
+Critical
+Conexiones 
+> umbral
+Notificació
+n 
+automática
+Warning
+Todas las alertas deben registrarse en 
+una tabla ALERT_LOG con timestamp, 
+condición disparadora, motor afectado 
+y estado de resolución. El motor de 
+alertas debe ser configurable sin 
+necesidad de redeployar la aplicación.
+T ecnologías Sugeridas
+El stack tecnológico propuesto a continuación está diseñado para ser compatible con entornos de desarrollo locales y 
+desplegable en contenedores Docker. El estudiante puede proponer variantes justificadas, siempre que mantenga la 
+cobertura funcional de todos los módulos y documente la elección en el informe técnico.
+Backend
+.NET 8 Web API (opción 
+principal) ó Python / 
+Java / C#, otro.
+Node.js con Express 
+(alternativa válida)
+Autenticación JWT 
+obligatoria
+Documentación con 
+Swagger/OpenAPI
+Frontend
+React (versión 18+) ó 
+Vue, Next, TypeScript, 
+Python, Java, otro.
+Angular como 
+alternativa válida
+Componentes de 
+gráficas en tiempo real
+Diseño responsivo 
+obligatorio
+Monitoreo
+Prometheus para 
+recolección de 
+métricas
+Grafana para 
+visualización operativa
+Exporters 
+personalizados por 
+motor de BD
+Alertmanager 
+integrado con el Alert 
+Engine
+Infraestructura
+Docker y Docker 
+Compose obligatorios
+Redis para caché en 
+contenedor
+Azure Blob Storage o 
+Amazon S3 para 
+backup remoto
+Variables de entorno 
+para credenciales
+Criterios de Evaluación y Entregables
+La práctica se evaluará de forma integral considerando tanto la calidad técnica de la implementación como la 
+profundidad del análisis académico documentado. Se espera que el estudiante demuestre comprensión de los 
+conceptos subyacentes, no únicamente la funcionalidad operativa de la plataforma.
+Distribución de la calificación
+25%
+Módulos de BD (3, 4 y 6)
+Slow Query, Concurrencia y Replicación — núcleo de BD II
+20%
+Backup & Recovery + Nube
+Implementación completa con replicación a Azure/AWS
+20%
+Arquitectura y c
