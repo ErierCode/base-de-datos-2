@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Guion Video - RetailX Lakehouse</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; max-width: 800px; margin: 40px auto; line-height: 1.5; color: #1a1a1a; }
+    h1 { text-align: center; color: #0b5fff; }
+    h2 { background: #e8f0ff; padding: 10px; border-left: 5px solid #0b5fff; margin-top: 2em; }
+    .decir { background: #f8f9fa; padding: 12px; border-radius: 8px; margin: 10px 0; }
+    .decir strong { color: #0050b3; }
+    .mostrar { background: #f0fff4; padding: 12px; border-radius: 8px; margin: 10px 0; }
+    .mostrar strong { color: #1a7f37; }
+    .mostrar li { margin: 6px 0; }
+    .meta { text-align: center; color: #666; font-size: 0.95em; }
+    @media print { body { margin: 20px; } h2 { page-break-after: avoid; } }
+  </style>
+</head>
+<body>
+  <h1>Guión para video</h1>
+  <p class="meta">Laboratorio Data Lakehouse RetailX · Spark + Delta Lake + Power BI<br>Duración: 12–18 min · <a href="https://www.canva.com/design/DAHKhY4CADc/eGKJqJH8PbN62bVg0-Eowg/view">Presentación Canva</a></p>
+
+  <h2>BLOQUE 0 — Introducción (1 min)</h2>
+  <div class="decir"><strong>TEXTO PARA DECIR:</strong><br>
+  Hola. Presento el laboratorio Data Lakehouse con Apache Spark y Delta Lake, caso RetailX. Implementé pipeline Medallion (Bronze, Silver, Gold), PySpark, Delta Lake y dashboard Power BI en capa Gold.</div>
+  <div class="mostrar"><strong>MOSTRAR EN PANTALLA:</strong><ul>
+    <li>Diapositiva 1 Canva (portada)</li>
+    <li>Carpeta <code>data-lakehouse/lakehouse</code></li>
+  </ul></div>
+
+  <h2>BLOQUE 1 — Problema y objetivos (2 min)</h2>
+  <div class="decir"><strong>TEXTO PARA DECIR:</strong><br>
+  RetailX tiene fuentes heterogéneas: CSV (ERP/POS), JSON (web/APIs), XML (IoT/GPS). Eso causa reportes lentos y KPIs distorsionados. Objetivos: diferenciar DW/Lake/Lakehouse, pipeline Medallion, Spark a escala y Delta con ACID.</div>
+  <div class="mostrar"><strong>MOSTRAR EN PANTALLA:</strong><ul>
+    <li>Diapositiva 3 Canva — Problema RetailX</li>
+    <li>Carpeta <code>data/</code> (csv, json, xml)</li>
+    <li>Diapositiva 2 Canva — Objetivos</li>
+  </ul></div>
+
+  <h2>BLOQUE 2 — DW vs Lake vs Lakehouse (1,5 min)</h2>
+  <div class="decir"><strong>TEXTO PARA DECIR:</strong><br>
+  DW es rígido y caro. Data Lake guarda crudo sin transacciones. Lakehouse + Delta Lake aporta ACID, versionado y time travel sobre almacenamiento barato.</div>
+  <div class="mostrar"><strong>MOSTRAR EN PANTALLA:</strong><ul>
+    <li>Diapositiva 4 Canva</li>
+    <li><code>delta/gold/.../_delta_log</code></li>
+  </ul></div>
+
+  <h2>BLOQUE 3 — Medallion (2 min)</h2>
+  <div class="decir"><strong>TEXTO PARA DECIR:</strong><br>
+  Bronze: CSV, JSON, XML sin transformar. Silver: limpieza y deduplicación. Gold: KPIs y agregados para Power BI.</div>
+  <div class="mostrar"><strong>MOSTRAR EN PANTALLA:</strong><ul>
+    <li>Diapositiva 5 Canva</li>
+    <li><code>delta/bronze</code>, <code>delta/silver</code>, <code>delta/gold</code></li>
+  </ul></div>
+
+  <h2>BLOQUE 4 — Apache Spark (1 min)</h2>
+  <div class="decir"><strong>TEXTO PARA DECIR:</strong><br>
+  Spark procesa en memoria y paralelo. Jobs por capa: Bronze, Silver, Gold, análisis y time travel.</div>
+  <div class="mostrar"><strong>MOSTRAR EN PANTALLA:</strong><ul>
+    <li>Diapositiva 6 Canva</li>
+    <li>Carpeta <code>jobs/</code></li>
+  </ul></div>
+
+  <h2>BLOQUE 5 — Docker y datos (2,5 min)</h2>
+  <div class="decir"><strong>TEXTO PARA DECIR:</strong><br>
+  Docker Compose, contenedor retailx_dataops_spark. Generamos ventas CSV (hasta 1M), JSON y XML. Job 01b usa SparkSession "RetailX".</div>
+  <div class="mostrar"><strong>MOSTRAR EN PANTALLA:</strong><ul>
+    <li><code>docker compose up -d</code> y <code>docker ps</code></li>
+    <li><code>python jobs/run_pipeline.py --rows 10000</code></li>
+    <li>Diapositiva 7 Canva</li>
+  </ul></div>
+
+  <h2>BLOQUE 6 — Delta SQL y time travel (2 min)</h2>
+  <div class="decir"><strong>TEXTO PARA DECIR:</strong><br>
+  Spark SQL groupBy cliente. Escribimos Delta con _delta_log. Leemos Delta y mostramos time travel.</div>
+  <div class="mostrar"><strong>MOSTRAR EN PANTALLA:</strong><ul>
+    <li><code>02b_spark_sql_delta_lab.py</code> y <code>07_delta_time_travel.py</code></li>
+    <li>Diapositiva 8 Canva</li>
+  </ul></div>
+
+  <h2>BLOQUE 7 — Análisis gerencial (2 min)</h2>
+  <div class="decir"><strong>TEXTO PARA DECIR:</strong><br>
+  Cuatro preguntas: mayor cliente, top 10 ventas, promedio por cliente, Pareto 80% ingresos. Job 06_analisis_negocio.py.</div>
+  <div class="mostrar"><strong>MOSTRAR EN PANTALLA:</strong><ul>
+    <li>Diapositiva 9 Canva (preguntas)</li>
+    <li>Salida de <code>06_analisis_negocio.py</code></li>
+  </ul></div>
+
+  <h2>BLOQUE 8 — Proyecto final y Power BI (3 min)</h2>
+  <div class="decir"><strong>TEXTO PARA DECIR:</strong><br>
+  Lakehouse completo: Bronze 3 formatos, Silver, Gold, Power BI sobre output CSV. Tres capas Medallion.</div>
+  <div class="mostrar"><strong>MOSTRAR EN PANTALLA:</strong><ul>
+    <li><code>output/*.csv</code></li>
+    <li>Power BI: tablas y dashboard</li>
+    <li>Diapositiva 9 Canva (proyecto final)</li>
+  </ul></div>
+
+  <h2>BLOQUE 9 — Cierre (1 min)</h2>
+  <div class="decir"><strong>TEXTO PARA DECIR:</strong><br>
+  Resumen: Lakehouse RetailX, Medallion, Spark+Delta, análisis, time travel, Power BI. Gracias.</div>
+  <div class="mostrar"><strong>MOSTRAR EN PANTALLA:</strong><ul>
+    <li>Diapositiva 5 + dashboard Power BI</li>
+  </ul></div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+table top_productos
+	lineageTag: gold-top
+
+	column producto
+		dataType: string
+		lineageTag: top-prod
+
+	column categoria
+		dataType: string
+		lineageTag: top-cat
+
+	column unidades_vendidas
+		dataType: int64
+		lineageTag: top-unid
+
+	column total_vendido
+		dataType: double
+		lineageTag: top-total
+
+	partition top_productos = m
+		mode: import
+		source =
+			let
+				Content = File.Contents(LakehouseRoot & "/output/top_productos.csv"),
+				CSV = Csv.Document(Content, [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Headers = Table.PromoteHeaders(CSV, [PromoteAllScalars=true]),
+				Result = Table.TransformColumnTypes(Headers, {
+					{"producto", type text},
+					{"categoria", type text},
+					{"unidades_vendidas", Int64.Type},
+					{"total_vendido", type number}
+				})
+			in
+				Result

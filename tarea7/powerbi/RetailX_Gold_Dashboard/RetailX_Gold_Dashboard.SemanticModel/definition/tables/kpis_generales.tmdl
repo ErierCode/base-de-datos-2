@@ -1,0 +1,39 @@
+table kpis_generales
+	lineageTag: gold-kpis
+
+	column total_transacciones
+		dataType: int64
+		lineageTag: kpi-tx
+
+	column ingresos_totales
+		dataType: double
+		lineageTag: kpi-ing
+
+	column ticket_promedio
+		dataType: double
+		lineageTag: kpi-ticket
+
+	column clientes_unicos
+		dataType: int64
+		lineageTag: kpi-cli
+
+	column productos_unicos
+		dataType: int64
+		lineageTag: kpi-prod
+
+	partition kpis_generales = m
+		mode: import
+		source =
+			let
+				Content = File.Contents(LakehouseRoot & "/output/kpis_generales.csv"),
+				CSV = Csv.Document(Content, [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Headers = Table.PromoteHeaders(CSV, [PromoteAllScalars=true]),
+				Result = Table.TransformColumnTypes(Headers, {
+					{"total_transacciones", Int64.Type},
+					{"ingresos_totales", type number},
+					{"ticket_promedio", type number},
+					{"clientes_unicos", Int64.Type},
+					{"productos_unicos", Int64.Type}
+				})
+			in
+				Result

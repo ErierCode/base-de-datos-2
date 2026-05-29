@@ -1,0 +1,34 @@
+table ventas_por_categoria
+	lineageTag: gold-cat
+
+	column categoria
+		dataType: string
+		lineageTag: cat-nombre
+
+	column cantidad_ventas
+		dataType: int64
+		lineageTag: cat-cant
+
+	column total_vendido
+		dataType: double
+		lineageTag: cat-total
+
+	column ticket_promedio
+		dataType: double
+		lineageTag: cat-ticket
+
+	partition ventas_por_categoria = m
+		mode: import
+		source =
+			let
+				Content = File.Contents(LakehouseRoot & "/output/ventas_por_categoria.csv"),
+				CSV = Csv.Document(Content, [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Headers = Table.PromoteHeaders(CSV, [PromoteAllScalars=true]),
+				Result = Table.TransformColumnTypes(Headers, {
+					{"categoria", type text},
+					{"cantidad_ventas", Int64.Type},
+					{"total_vendido", type number},
+					{"ticket_promedio", type number}
+				})
+			in
+				Result

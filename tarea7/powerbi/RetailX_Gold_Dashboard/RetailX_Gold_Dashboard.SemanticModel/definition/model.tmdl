@@ -1,0 +1,14 @@
+model Model
+	culture: es-GT
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-GT
+
+annotation PBI_QueryOrder = ["LakehouseRoot"]
+
+ref table kpis_generales
+ref table ventas_por_categoria
+ref table ventas_por_pais
+ref table ventas_por_mes
+ref table top_productos
+
+ref cultureInfo es-GT

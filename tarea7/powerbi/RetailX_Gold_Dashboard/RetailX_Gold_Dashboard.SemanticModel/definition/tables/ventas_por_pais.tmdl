@@ -1,0 +1,29 @@
+table ventas_por_pais
+	lineageTag: gold-pais
+
+	column pais
+		dataType: string
+		lineageTag: pais-nombre
+
+	column cantidad_ventas
+		dataType: int64
+		lineageTag: pais-cant
+
+	column total_vendido
+		dataType: double
+		lineageTag: pais-total
+
+	partition ventas_por_pais = m
+		mode: import
+		source =
+			let
+				Content = File.Contents(LakehouseRoot & "/output/ventas_por_pais.csv"),
+				CSV = Csv.Document(Content, [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Headers = Table.PromoteHeaders(CSV, [PromoteAllScalars=true]),
+				Result = Table.TransformColumnTypes(Headers, {
+					{"pais", type text},
+					{"cantidad_ventas", Int64.Type},
+					{"total_vendido", type number}
+				})
+			in
+				Result

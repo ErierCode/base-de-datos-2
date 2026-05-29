@@ -1,0 +1,29 @@
+table ventas_por_mes
+	lineageTag: gold-mes
+
+	column anio
+		dataType: int64
+		lineageTag: mes-anio
+
+	column mes
+		dataType: int64
+		lineageTag: mes-num
+
+	column total_vendido
+		dataType: double
+		lineageTag: mes-total
+
+	partition ventas_por_mes = m
+		mode: import
+		source =
+			let
+				Content = File.Contents(LakehouseRoot & "/output/ventas_por_mes.csv"),
+				CSV = Csv.Document(Content, [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Headers = Table.PromoteHeaders(CSV, [PromoteAllScalars=true]),
+				Result = Table.TransformColumnTypes(Headers, {
+					{"anio", Int64.Type},
+					{"mes", Int64.Type},
+					{"total_vendido", type number}
+				})
+			in
+				Result

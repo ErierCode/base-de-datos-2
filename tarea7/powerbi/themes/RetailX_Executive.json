@@ -1,0 +1,41 @@
+{
+  "name": "RetailX Executive",
+  "dataColors": [
+    "#0B5FFF",
+    "#00A3A3",
+    "#FF8C42",
+    "#5B5FEF",
+    "#2ECC71",
+    "#E74C3C",
+    "#9B59B6",
+    "#F39C12"
+  ],
+  "background": "#F4F6F9",
+  "foreground": "#1B1F24",
+  "tableAccent": "#0B5FFF",
+  "maximum": "#2ECC71",
+  "minimum": "#E74C3C",
+  "center": "#F39C12",
+  "textClasses": {
+    "callout": { "fontSize": 32, "fontFace": "Segoe UI Semibold", "color": "#1B1F24" },
+    "title": { "fontSize": 12, "fontFace": "Segoe UI Semibold", "color": "#5C6670" },
+    "header": { "fontSize": 11, "fontFace": "Segoe UI", "color": "#1B1F24" },
+    "label": { "fontSize": 10, "fontFace": "Segoe UI", "color": "#5C6670" }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [{ "color": { "solid": { "color": "#FFFFFF" } }, "transparency": 0 }],
+        "border": [{ "color": { "solid": { "color": "#E3E8EF" } }, "radius": 8, "show": true }],
+        "title": [{ "fontSize": 11, "fontColor": { "solid": { "color": "#5C6670" } } }],
+        "dropShadow": [{ "show": true, "color": { "solid": { "color": "#000000" } }, "transparency": 90, "position": "Outer", "preset": "BottomRight" }]
+      }
+    },
+    "card": {
+      "*": {
+        "labels": [{ "fontSize": 28, "color": { "solid": { "color": "#0B5FFF" } } }],
+        "categoryLabels": [{ "show": true, "fontSize": 11, "color": { "solid": { "color": "#5C6670" } } }]
+      }
+    }
+  }
+}

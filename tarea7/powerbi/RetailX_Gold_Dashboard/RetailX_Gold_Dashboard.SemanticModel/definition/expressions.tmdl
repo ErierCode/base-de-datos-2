@@ -1,0 +1,1 @@
+expression LakehouseRoot = "C:/Users/erira/OneDrive/Desktop/practicaBD/data-lakehouse/lakehouse" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
